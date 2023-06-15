@@ -1,109 +1,72 @@
 
-import java.util.Scanner;
+import java.util.Arrays;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.XMLFormatter;
+import java.io.IOException;
 public class App {
-    public static int input_int(){
-        boolean i=true;
-        Scanner sc = new Scanner(System.in);
-        while (i){
-            System.out.println("Введите число:");
-            if (sc.hasNextInt()) {
-                int number = sc.nextInt();
-                i=false;
-                
-                return number;
-            } else {
-                System.out.println("Ошибка");
-            }
-            sc.nextLine();
-        }
-        return 0;
-    }
-    public static String [] input_calc(){
-        System.out.println("Введите выражение типа 'A' (+ - / *) 'B':");
-        Scanner scc = new Scanner(System.in);
-        String input=scc.nextLine();
-        String [] res;
-        int j=1;
-        res = new String[4];
-        res[0]="0";
-        for (int i = 0; i < input.length(); i++) {
-            if (input.charAt(i)==' '){}
-            else if (input.charAt(i)==','){
-                res [0]="1";
-            }
-            else if((input.charAt(i)=='/') || (input.charAt(i)=='+')|| (input.charAt(i)=='-')|| (input.charAt(i)=='*')){
-                if (res[2]==null){
-                    res[2]=Character.toString(input.charAt(i));
-                    j=3;
-                }
-                else{res [0]="1";} 
-            }
-            else{
-                if (res[j]!=null){res[j]=res[j]+Character.toString(input.charAt(i));}
-                else{res[j]=Character.toString(input.charAt(i));}   
-            }
-        }
-        if (res[3]==null){res [0]="1";}
-        scc.close();
-        return res;
-    }
-    public static void calc (String [] inp){
-        boolean err=false;
-        double a=0.1,b=0.1;
-        if (inp[0]=="0"){
-            try {
-            a = Double.parseDouble(inp[1]);
-            } catch (NumberFormatException nfe) {err=true;}
-            System.out.println(err);
-            try {
-            b = Double.parseDouble(inp[3]);
-            } catch (NumberFormatException nfe) {err=true;}
-            System.out.println(err);
-            if (err==false){
-                switch (inp[2]){
-                    case "/":
-                        System.out.println(String.format("%s / %s = %s",a,b,a/b));
-                        break;
-                    case "*":
-                        System.out.println(String.format("%s * %s = %s",a,b,a*b));
-                        break;
-                    case "+":
-                        System.out.println(String.format("%s + %s = %s",a,b,a+b));
-                        break;
-                    case "-":
-                        System.out.println(String.format("%s - %s = %s",a,b,a-b));
-                        break;
+    public static void Sort(int[] sortArr)throws IOException{
+        Logger logger=Logger.getLogger(App.class.getName());
+        FileHandler fh = new FileHandler("log.xml");
+        logger.addHandler(fh);
+        XMLFormatter xml = new XMLFormatter();
+        fh.setFormatter(xml);
+
+
+        logger.addHandler(fh);
+        for (int i = 0; i < sortArr.length - 1; i++) {
+            for(int j = 0; j < sortArr.length - i - 1; j++) {
+                if(sortArr[j + 1] < sortArr[j]) {
+                    int swap = sortArr[j];
+                    sortArr[j] = sortArr[j + 1];
+                    sortArr[j + 1] = swap;
+                    logger.info("TEST"+Arrays.toString(sortArr));
                 }
             }
-            else{System.out.println("Error");}
         }
-        else{System.out.println("Error");}
     }
 
+   
 
 
     public static void main(String[] args) throws Exception {
-        // 1) Вычислить сумма чисел от 1 до n
+        // 1) Дана строка sql-запроса "select * from students where ". Сформируйте часть WHERE этого запроса, используя StringBuilder.
+        //  Данные для фильтрации приведены ниже в виде json-строки.
+        //  Если значение null, то параметр не должен попадать в запрос.
+        // Параметры для фильтрации: {"name":"Ivanov", "country":"Russia", "city":"Moscow", "age":"null"}
         System.out.println("Задание 1");
-        int number1=input_int();
-        int sum1=0;
-        int i=0;
-        while (i<=number1){
-            sum1=i+sum1;
-            i++;
+        String base_1="select * from students where ";
+        StringBuilder new_base_1 = new StringBuilder(base_1);
+        String input_1 = "\"name\":\"Ivanov\", \"country\":\"Russia\", \"city\":\"Moscow\", \"age\":\"null\"";
+        String [] out_1=input_1.split(",");
+      
+
+
+        for (int i=0; i<out_1.length;i++){
+            if (!(out_1[i].contains("null"))){
+                String [] l =out_1[i].split(":");
+                String p=l[0].replace('"', ' ');
+                if (i==out_1.length-2){
+                    new_base_1.append(p+'='+l[1]);
+                }
+                else {new_base_1.append(p+'='+l[1]+" AND ");}
+                }
         }
-        System.out.println("Ответ: "+sum1);
-        // 2) Вывести все простые числа от 1 до 1000
+        System.out.println(new_base_1);
+
         System.out.println("Задание 2");
-        i=3;
-        String res2="2";
-        while (i<1000){
-            res2=res2+", "+Integer.toString(i);
-            i=i+2;
-        }
-        System.out.println(res2);
-        // 3) Реализовать простой калькулятор
-        calc (input_calc());
+        // 2) Реализуйте алгоритм сортировки пузырьком числового массива, результат после каждой итерации запишите в лог-файл.
+        StringBuilder base_2 = new StringBuilder("");
+        int[] array = {123, 34, 24, 1324, 432, 135};
+            Sort(array);
+            for(int i = 0; i < array.length; i++){
+                base_2.append(array[i]+" ");
+            }
+        System.out.println(base_2); 
+
+
+
+        
         
 
 
