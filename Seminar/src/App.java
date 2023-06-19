@@ -1,74 +1,90 @@
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.XMLFormatter;
-import java.io.IOException;
+import java.util.Collections;
+
+
 public class App {
-    public static void Sort(int[] sortArr)throws IOException{
-        Logger logger=Logger.getLogger(App.class.getName());
-        FileHandler fh = new FileHandler("log.xml");
-        logger.addHandler(fh);
-        XMLFormatter xml = new XMLFormatter();
-        fh.setFormatter(xml);
+    public static void mergeSort(int[] array, int low, int high) {
+        if (high <= low)
+            return;
 
+        int mid = (low + high) / 2;
+        mergeSort(array, low, mid);
+        mergeSort(array, mid + 1, high);
+        merge(array, low, mid, high);
+    }
 
-        logger.addHandler(fh);
-        for (int i = 0; i < sortArr.length - 1; i++) {
-            for(int j = 0; j < sortArr.length - i - 1; j++) {
-                if(sortArr[j + 1] < sortArr[j]) {
-                    int swap = sortArr[j];
-                    sortArr[j] = sortArr[j + 1];
-                    sortArr[j + 1] = swap;
-                    logger.info("TEST"+Arrays.toString(sortArr));
+    public static void merge(int[] array, int low, int mid, int high) {
+        int leftArray[] = new int[mid - low + 1];
+        int rightArray[] = new int[high - mid];
+        for (int i = 0; i < leftArray.length; i++)
+            leftArray[i] = array[low + i];
+        for (int i = 0; i < rightArray.length; i++)
+            rightArray[i] = array[mid + i + 1];
+        int leftIndex = 0;
+        int rightIndex = 0;
+        for (int i = low; i < high + 1; i++) {
+            if (leftIndex < leftArray.length && rightIndex < rightArray.length) {
+                if (leftArray[leftIndex] < rightArray[rightIndex]) {
+                    array[i] = leftArray[leftIndex];
+                    leftIndex++;
+                } else {
+                    array[i] = rightArray[rightIndex];
+                    rightIndex++;
                 }
+            } else if (leftIndex < leftArray.length) {
+                array[i] = leftArray[leftIndex];
+                leftIndex++;
+            } else if (rightIndex < rightArray.length) {
+                array[i] = rightArray[rightIndex];
+                rightIndex++;
             }
         }
     }
-
-   
-
-
-    public static void main(String[] args) throws Exception {
-        // 1) Дана строка sql-запроса "select * from students where ". Сформируйте часть WHERE этого запроса, используя StringBuilder.
-        //  Данные для фильтрации приведены ниже в виде json-строки.
-        //  Если значение null, то параметр не должен попадать в запрос.
-        // Параметры для фильтрации: {"name":"Ivanov", "country":"Russia", "city":"Moscow", "age":"null"}
-        System.out.println("Задание 1");
-        String base_1="select * from students where ";
-        StringBuilder new_base_1 = new StringBuilder(base_1);
-        String input_1 = "\"name\":\"Ivanov\", \"country\":\"Russia\", \"city\":\"Moscow\", \"age\":\"null\"";
-        String [] out_1=input_1.split(",");
-      
-
-
-        for (int i=0; i<out_1.length;i++){
-            if (!(out_1[i].contains("null"))){
-                String [] l =out_1[i].split(":");
-                String p=l[0].replace('"', ' ');
-                if (i==out_1.length-2){
-                    new_base_1.append(p+'='+l[1]);
-                }
-                else {new_base_1.append(p+'='+l[1]+" AND ");}
-                }
-        }
-        System.out.println(new_base_1);
-
-        System.out.println("Задание 2");
-        // 2) Реализуйте алгоритм сортировки пузырьком числового массива, результат после каждой итерации запишите в лог-файл.
-        StringBuilder base_2 = new StringBuilder("");
-        int[] array = {123, 34, 24, 1324, 432, 135};
-            Sort(array);
-            for(int i = 0; i < array.length; i++){
-                base_2.append(array[i]+" ");
+    public static void chet(int[] array) {
+        ArrayList <Integer> res = new ArrayList <Integer>();
+        for (int i : array)
+            if (i % 2 != 0){
+                res.add(i);
             }
-        System.out.println(base_2); 
+  
+        Integer[] out = res.toArray(Integer[]::new);
+        System.out.println(Arrays.toString(out));
+        return ;}
+ 
+    public static void main(String[] args) throws Exception {
+        // Реализовать алгоритм сортировки слиянием(метод взять из Интернета)
+        System.out.println("Задание 1");
+        int[] array = new int[] { 13, 17, 37, 12, 64, 31, 27 };
+        System.out.println(Arrays.toString(array));
+        mergeSort(array, 0, array.length - 1);
+        System.out.println(Arrays.toString(array));
+
+        // Пусть дан произвольный список целых чисел, удалить из него четные числа
+        System.out.println("Задание 2");
+        int[] array2 = new int[] { 13, 17, 37, 12, 64, 31, 27 }; 
+        System.out.println(Arrays.toString(array2));
+        chet(array2);
+        // Задан целочисленный список ArrayList. Найти минимальное, максимальное и среднее из этого списка.
+        System.out.println("Задание 3");
+        ArrayList <Integer> array3 = new ArrayList <Integer>();
+        for (int i : array2)
+            array3.add(i);
+        
+           
+
+        Integer maxim = Collections.max(array3);
+        Integer minim = Collections.min(array3);
+        Integer sum=0;
+        for (int i : array3)
+            sum+=i;
+        System.out.println("Среднее: "+sum/array3.size());
+        System.out.println("Максимум: "+maxim);
+        System.out.println("Минимум: "+minim);
 
 
 
         
-        
-
-
     }
 }
